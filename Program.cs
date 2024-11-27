@@ -1,12 +1,13 @@
-﻿using MiNET.Worlds;
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 class HangmanGame
 {
     static List<string> wordList = new List<string> { "developer", "programming", "hangman", "console", "challenge" };
     static int maxAttempts;
     static Dictionary<string, int> leaderboard = new Dictionary<string, int>();
+    static TimeSpan totalTime = TimeSpan.Zero; // Variable to track total time across rounds
 
     static void Main()
     {
@@ -18,6 +19,11 @@ class HangmanGame
             int difficulty = GetDifficulty();
             maxAttempts = difficulty == 1 ? 10 : difficulty == 2 ? 6 : 4;
             Console.WriteLine("=== Welcome to Hangman ===");
+
+            // Start the timer
+            Stopwatch stopwatch = new Stopwatch();
+            stopwatch.Start();
+
             string wordToGuess = GetRandomWord();
             char[] guessedWord = new string('_', wordToGuess.Length).ToCharArray();
             List<char> wrongGuesses = new List<char>();
@@ -32,6 +38,11 @@ class HangmanGame
                 Console.WriteLine($"Word: {string.Join(" ", guessedWord)}");
                 Console.WriteLine($"Wrong guesses: {string.Join(", ", wrongGuesses)}");
                 Console.WriteLine($"Attempts left: {attemptsLeft}");
+
+                // Display the timer
+                TimeSpan timeElapsed = stopwatch.Elapsed;
+                Console.WriteLine($"Time elapsed: {timeElapsed.Minutes:D2}:{timeElapsed.Seconds:D2}");
+
                 Console.Write("Enter a letter: ");
                 char guess = Console.ReadLine().ToLower()[0];
 
@@ -66,6 +77,9 @@ class HangmanGame
                 }
             }
 
+            // Stop the timer after the game ends
+            stopwatch.Stop();
+
             Console.Clear();
             if (new string(guessedWord) == wordToGuess)
             {
@@ -80,6 +94,16 @@ class HangmanGame
             int score = maxAttempts - attemptsLeft;
             UpdateLeaderboard(playerName, new string(guessedWord) == wordToGuess ? score + 10 : -5);
             DisplayLeaderboard();
+
+            // Add the time from this round to the total time
+            totalTime += stopwatch.Elapsed;
+
+            // Show elapsed time for this round
+            TimeSpan finalTime = stopwatch.Elapsed;
+            Console.WriteLine($"Time for this game: {finalTime.Minutes:D2}:{finalTime.Seconds:D2}");
+
+            // Show total accumulated time
+            Console.WriteLine($"Total time accumulated: {totalTime.Minutes:D2}:{totalTime.Seconds:D2}");
 
             Console.WriteLine("Do you want to play again? (yes/no): ");
 
@@ -169,6 +193,4 @@ class HangmanGame
             Console.WriteLine($"{player.Key}: {player.Value} points");
         }
     }
-
-
 }

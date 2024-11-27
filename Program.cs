@@ -10,67 +10,73 @@ class HangmanGame
 
     static void Main()
     {
-        int difficulty = GetDifficulty();
-        maxAttempts = difficulty == 1 ? 10 : difficulty == 2 ? 6 : 4;
-        Console.WriteLine("=== Welcome to Hangman ===");
-        string wordToGuess = GetRandomWord();
-        char[] guessedWord = new string('_', wordToGuess.Length).ToCharArray();
-        List<char> wrongGuesses = new List<char>();
-
-        int attemptsLeft = maxAttempts;
-
-        while (attemptsLeft > 0 && new string(guessedWord) != wordToGuess)
+        do
         {
-            Console.Clear();
-            Console.WriteLine("=== Hangman ===");
-            DrawHangman(maxAttempts - attemptsLeft);
-            Console.WriteLine($"Word: {string.Join(" ", guessedWord)}");
-            Console.WriteLine($"Wrong guesses: {string.Join(", ", wrongGuesses)}");
-            Console.WriteLine($"Attempts left: {attemptsLeft}");
-            Console.Write("Enter a letter: ");
-            char guess = Console.ReadLine().ToLower()[0];
 
-            if (!char.IsLetter(guess))
-            {
-                Console.WriteLine("Please enter a valid letter.");
-                continue;
-            }
+            int difficulty = GetDifficulty();
+            maxAttempts = difficulty == 1 ? 10 : difficulty == 2 ? 6 : 4;
+            Console.WriteLine("=== Welcome to Hangman ===");
+            string wordToGuess = GetRandomWord();
+            char[] guessedWord = new string('_', wordToGuess.Length).ToCharArray();
+            List<char> wrongGuesses = new List<char>();
 
-            if (wrongGuesses.Contains(guess) || Array.Exists(guessedWord, c => c == guess))
-            {
-                Console.WriteLine("You already guessed that letter.");
-                continue;
-            }
+            int attemptsLeft = maxAttempts;
 
-            if (wordToGuess.Contains(guess))
+            while (attemptsLeft > 0 && new string(guessedWord) != wordToGuess)
             {
-                for (int i = 0; i < wordToGuess.Length; i++)
+                Console.Clear();
+                Console.WriteLine("=== Hangman ===");
+                DrawHangman(maxAttempts - attemptsLeft);
+                Console.WriteLine($"Word: {string.Join(" ", guessedWord)}");
+                Console.WriteLine($"Wrong guesses: {string.Join(", ", wrongGuesses)}");
+                Console.WriteLine($"Attempts left: {attemptsLeft}");
+                Console.Write("Enter a letter: ");
+                char guess = Console.ReadLine().ToLower()[0];
+
+                if (!char.IsLetter(guess))
                 {
-                    if (wordToGuess[i] == guess)
-                    {
-                        guessedWord[i] = guess;
-                    }
+                    Console.WriteLine("Please enter a valid letter.");
+                    continue;
                 }
-                Console.WriteLine("Good guess!");
+
+                if (wrongGuesses.Contains(guess) || Array.Exists(guessedWord, c => c == guess))
+                {
+                    Console.WriteLine("You already guessed that letter.");
+                    continue;
+                }
+
+                if (wordToGuess.Contains(guess))
+                {
+                    for (int i = 0; i < wordToGuess.Length; i++)
+                    {
+                        if (wordToGuess[i] == guess)
+                        {
+                            guessedWord[i] = guess;
+                        }
+                    }
+                    Console.WriteLine("Good guess!");
+                }
+                else
+                {
+                    wrongGuesses.Add(guess);
+                    attemptsLeft--;
+                    Console.WriteLine("Wrong guess!");
+                }
+            }
+
+            Console.Clear();
+            if (new string(guessedWord) == wordToGuess)
+            {
+                Console.WriteLine($"Congratulations! You guessed the word: {wordToGuess}");
             }
             else
             {
-                wrongGuesses.Add(guess);
-                attemptsLeft--;
-                Console.WriteLine("Wrong guess!");
+                DrawHangman(maxAttempts);
+                Console.WriteLine($"Game over! The word was: {wordToGuess}");
             }
-        }
+            Console.WriteLine("Do you want to play again? (yes/no): ");
 
-        Console.Clear();
-        if (new string(guessedWord) == wordToGuess)
-        {
-            Console.WriteLine($"Congratulations! You guessed the word: {wordToGuess}");
-        }
-        else
-        {
-            DrawHangman(maxAttempts);
-            Console.WriteLine($"Game over! The word was: {wordToGuess}");
-        }
+        } while (Console.ReadLine().ToLower() == "yes");
     }
 
     static string GetRandomWord()

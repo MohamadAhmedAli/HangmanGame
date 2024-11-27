@@ -12,7 +12,7 @@ class HangmanGame
     {
         do
         {
-
+            AddWords();
             int difficulty = GetDifficulty();
             maxAttempts = difficulty == 1 ? 10 : difficulty == 2 ? 6 : 4;
             Console.WriteLine("=== Welcome to Hangman ===");
@@ -116,6 +116,29 @@ class HangmanGame
                 return int.Parse(choice); // Convert the choice to an integer
             }
             Console.WriteLine("Invalid input. Please try again.");
+        }
+    }
+
+    static void AddWords()
+    {
+        Console.WriteLine("Do you want to add custom words? (yes/no): ");
+        if (Console.ReadLine().ToLower() == "yes")
+        {
+            Console.WriteLine("Enter words (type 'done' to finish):");
+            while (true)
+            {
+                string word = Console.ReadLine();
+                if (word.ToLower() == "done") break;
+                if (!string.IsNullOrWhiteSpace(word) && word.Length > 0)
+                {
+                    wordList.Add(word.ToLower());
+                    Console.WriteLine($"Word '{word}' added!");
+                }
+                else
+                {
+                    Console.WriteLine("Invalid word. Try again.");
+                }
+            }
         }
     }
 

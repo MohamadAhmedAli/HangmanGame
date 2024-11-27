@@ -6,10 +6,12 @@ class HangmanGame
 {
     static List<string> wordList = new List<string> { "developer", "programming", "hangman", "console", "challenge" };
     static int maxAttempts;
-   
+    static Dictionary<string, int> leaderboard = new Dictionary<string, int>();
 
     static void Main()
     {
+        Console.Write("Enter your name: ");
+        string playerName = Console.ReadLine();
         do
         {
             AddWords();
@@ -74,6 +76,11 @@ class HangmanGame
                 DrawHangman(maxAttempts);
                 Console.WriteLine($"Game over! The word was: {wordToGuess}");
             }
+
+            int score = maxAttempts - attemptsLeft;
+            UpdateLeaderboard(playerName, new string(guessedWord) == wordToGuess ? score + 10 : -5);
+            DisplayLeaderboard();
+
             Console.WriteLine("Do you want to play again? (yes/no): ");
 
         } while (Console.ReadLine().ToLower() == "yes");
@@ -141,5 +148,27 @@ class HangmanGame
             }
         }
     }
+
+    static void UpdateLeaderboard(string playerName, int score)
+    {
+        if (leaderboard.ContainsKey(playerName))
+        {
+            leaderboard[playerName] += score;
+        }
+        else
+        {
+            leaderboard[playerName] = score;
+        }
+    }
+
+    static void DisplayLeaderboard()
+    {
+        Console.WriteLine("=== Leaderboard ===");
+        foreach (var player in leaderboard)
+        {
+            Console.WriteLine($"{player.Key}: {player.Value} points");
+        }
+    }
+
 
 }

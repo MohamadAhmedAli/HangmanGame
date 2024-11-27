@@ -1,13 +1,17 @@
-﻿using System;
+﻿using MiNET.Worlds;
+using System;
 using System.Collections.Generic;
 
 class HangmanGame
 {
     static List<string> wordList = new List<string> { "developer", "programming", "hangman", "console", "challenge" };
-    static int maxAttempts = 6;
+    static int maxAttempts;
+   
 
     static void Main()
     {
+        int difficulty = GetDifficulty();
+        maxAttempts = difficulty == 1 ? 10 : difficulty == 2 ? 6 : 4;
         Console.WriteLine("=== Welcome to Hangman ===");
         string wordToGuess = GetRandomWord();
         char[] guessedWord = new string('_', wordToGuess.Length).ToCharArray();
@@ -89,4 +93,24 @@ class HangmanGame
 
         Console.WriteLine(hangmanStages[incorrectGuesses]);
     }
+
+    static int GetDifficulty()
+    {
+        Console.WriteLine("Choose Difficulty Level:");
+        Console.WriteLine("1. Easy (10 attempts)");
+        Console.WriteLine("2. Medium (6 attempts)");
+        Console.WriteLine("3. Hard (4 attempts)");
+
+        while (true)
+        {
+            Console.Write("Enter 1, 2, or 3: ");
+            string choice = Console.ReadLine();
+            if (choice == "1" || choice == "2" || choice == "3")
+            {
+                return int.Parse(choice); // Convert the choice to an integer
+            }
+            Console.WriteLine("Invalid input. Please try again.");
+        }
+    }
+
 }

@@ -11,14 +11,24 @@ class HangmanGame
 
     static void Main()
     {
+        Console.ForegroundColor = ConsoleColor.Cyan; // Set text color for the UI
+        Console.WriteLine("#############################################");
+        Console.WriteLine("#         WELCOME TO THE HANGMAN GAME       #");
+        Console.WriteLine("#############################################");
+        Console.ResetColor();
+
         Console.Write("Enter your name: ");
         string playerName = Console.ReadLine();
+
         do
         {
             AddWords();
             int difficulty = GetDifficulty();
             maxAttempts = difficulty == 1 ? 10 : difficulty == 2 ? 6 : 4;
-            Console.WriteLine("=== Welcome to Hangman ===");
+
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine("\n=== GAME START ===");
+            Console.ResetColor();
 
             // Start the timer
             Stopwatch stopwatch = new Stopwatch();
@@ -33,28 +43,34 @@ class HangmanGame
             while (attemptsLeft > 0 && new string(guessedWord) != wordToGuess)
             {
                 Console.Clear();
-                Console.WriteLine("=== Hangman ===");
+                DrawHeader("Hangman Game");
                 DrawHangman(maxAttempts - attemptsLeft);
-                Console.WriteLine($"Word: {string.Join(" ", guessedWord)}");
-                Console.WriteLine($"Wrong guesses: {string.Join(", ", wrongGuesses)}");
-                Console.WriteLine($"Attempts left: {attemptsLeft}");
+                DrawWord(guessedWord);
+                DrawAttempts(attemptsLeft);
+                DrawWrongGuesses(wrongGuesses);
 
                 // Display the timer
                 TimeSpan timeElapsed = stopwatch.Elapsed;
-                Console.WriteLine($"Time elapsed: {timeElapsed.Minutes:D2}:{timeElapsed.Seconds:D2}");
+                Console.ForegroundColor = ConsoleColor.Yellow;
+                Console.WriteLine($"\nTime elapsed: {timeElapsed.Minutes:D2}:{timeElapsed.Seconds:D2}");
+                Console.ResetColor();
 
-                Console.Write("Enter a letter: ");
-                char guess = Console.ReadLine().ToLower()[0];
-
-                if (!char.IsLetter(guess))
+                Console.Write("\nEnter a letter: ");
+                string input = Console.ReadLine().ToLower();
+                if (string.IsNullOrEmpty(input) || !char.IsLetter(input[0]))
                 {
-                    Console.WriteLine("Please enter a valid letter.");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("Invalid input! Please enter a valid letter.");
+                    Console.ResetColor();
                     continue;
                 }
 
+                char guess = input[0];
                 if (wrongGuesses.Contains(guess) || Array.Exists(guessedWord, c => c == guess))
                 {
-                    Console.WriteLine("You already guessed that letter.");
+                    Console.ForegroundColor = ConsoleColor.Red;
+                    Console.WriteLine("You already guessed that letter!");
+                    Console.ResetColor();
                     continue;
                 }
 
@@ -67,13 +83,17 @@ class HangmanGame
                             guessedWord[i] = guess;
                         }
                     }
+                    Console.ForegroundColor = ConsoleColor.Green;
                     Console.WriteLine("Good guess!");
+                    Console.ResetColor();
                 }
                 else
                 {
                     wrongGuesses.Add(guess);
                     attemptsLeft--;
+                    Console.ForegroundColor = ConsoleColor.Red;
                     Console.WriteLine("Wrong guess!");
+                    Console.ResetColor();
                 }
             }
 
@@ -83,12 +103,16 @@ class HangmanGame
             Console.Clear();
             if (new string(guessedWord) == wordToGuess)
             {
+                Console.ForegroundColor = ConsoleColor.Green;
                 Console.WriteLine($"Congratulations! You guessed the word: {wordToGuess}");
+                Console.ResetColor();
             }
             else
             {
                 DrawHangman(maxAttempts);
+                Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Game over! The word was: {wordToGuess}");
+                Console.ResetColor();
             }
 
             int score = maxAttempts - attemptsLeft;
@@ -100,12 +124,12 @@ class HangmanGame
 
             // Show elapsed time for this round
             TimeSpan finalTime = stopwatch.Elapsed;
-            Console.WriteLine($"Time for this game: {finalTime.Minutes:D2}:{finalTime.Seconds:D2}");
+            Console.WriteLine($"\nTime for this game: {finalTime.Minutes:D2}:{finalTime.Seconds:D2}");
 
             // Show total accumulated time
             Console.WriteLine($"Total time accumulated: {totalTime.Minutes:D2}:{totalTime.Seconds:D2}");
 
-            Console.WriteLine("Do you want to play again? (yes/no): ");
+            Console.WriteLine("\nDo you want to play again? (yes/no): ");
 
         } while (Console.ReadLine().ToLower() == "yes");
     }
@@ -128,12 +152,14 @@ class HangmanGame
             "  +---+\n  O   |\n /|\\  |\n / \\  |\n     ==="
         };
 
+        Console.ForegroundColor = ConsoleColor.Magenta;
         Console.WriteLine(hangmanStages[incorrectGuesses]);
+        Console.ResetColor();
     }
 
     static int GetDifficulty()
     {
-        Console.WriteLine("Choose Difficulty Level:");
+        DrawHeader("Choose Difficulty Level");
         Console.WriteLine("1. Easy (10 attempts)");
         Console.WriteLine("2. Medium (6 attempts)");
         Console.WriteLine("3. Hard (4 attempts)");
@@ -152,6 +178,7 @@ class HangmanGame
 
     static void AddWords()
     {
+        DrawHeader("Add Custom Words");
         Console.WriteLine("Do you want to add custom words? (yes/no): ");
         if (Console.ReadLine().ToLower() == "yes")
         {
@@ -187,10 +214,40 @@ class HangmanGame
 
     static void DisplayLeaderboard()
     {
-        Console.WriteLine("=== Leaderboard ===");
+        DrawHeader("Leaderboard");
         foreach (var player in leaderboard)
         {
             Console.WriteLine($"{player.Key}: {player.Value} points");
         }
+    }
+
+    static void DrawHeader(string title)
+    {
+        Console.ForegroundColor = ConsoleColor.Cyan;
+        Console.WriteLine("\n=================================");
+        Console.WriteLine($"        {title.ToUpper()}");
+        Console.WriteLine("=================================");
+        Console.ResetColor();
+    }
+
+    static void DrawWord(char[] guessedWord)
+    {
+        Console.ForegroundColor = ConsoleColor.Yellow;
+        Console.WriteLine($"\nWord: {string.Join(" ", guessedWord)}");
+        Console.ResetColor();
+    }
+
+    static void DrawAttempts(int attemptsLeft)
+    {
+        Console.ForegroundColor = ConsoleColor.Green;
+        Console.WriteLine($"Attempts left: {attemptsLeft}");
+        Console.ResetColor();
+    }
+
+    static void DrawWrongGuesses(List<char> wrongGuesses)
+    {
+        Console.ForegroundColor = ConsoleColor.Red;
+        Console.WriteLine($"Wrong guesses: {string.Join(", ", wrongGuesses)}");
+        Console.ResetColor();
     }
 }

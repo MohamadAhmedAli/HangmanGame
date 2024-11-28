@@ -44,7 +44,7 @@ class HangmanGame
             {
                 Console.Clear();
                 DrawHeader("Hangman Game");
-                DrawHangman(maxAttempts - attemptsLeft);
+                DrawHangman(maxAttempts - attemptsLeft,difficulty);
                 DrawWord(guessedWord);
                 DrawAttempts(attemptsLeft);
                 DrawWrongGuesses(wrongGuesses);
@@ -109,7 +109,7 @@ class HangmanGame
             }
             else
             {
-                DrawHangman(maxAttempts);
+                DrawHangman(maxAttempts,difficulty);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Game over! The word was: {wordToGuess}");
                 Console.ResetColor();
@@ -140,22 +140,77 @@ class HangmanGame
         return wordList[random.Next(wordList.Count)];
     }
 
-    static void DrawHangman(int incorrectGuesses)
+    static void DrawHangman(int incorrectGuesses, int difficulty)
     {
         string[] hangmanStages = {
-            "  +---+\n      |\n      |\n      |\n     ===",
-            "  +---+\n  O   |\n      |\n      |\n     ===",
-            "  +---+\n  O   |\n  |   |\n      |\n     ===",
-            "  +---+\n  O   |\n /|   |\n      |\n     ===",
-            "  +---+\n  O   |\n /|\\  |\n      |\n     ===",
-            "  +---+\n  O   |\n /|\\  |\n /    |\n     ===",
-            "  +---+\n  O   |\n /|\\  |\n / \\  |\n     ==="
-        };
+        @"
+  _______
+  |     |
+        |
+        |
+        |
+        |
+=========", 
+        @"
+  _______
+  |     |
+  O     |
+        |
+        |
+        |
+=========", 
+        @"
+  _______
+  |     |
+  O     |
+  |     |
+        |
+        |
+=========",
+        @"
+  _______
+  |     |
+  O     |
+ /|     |
+        |
+        |
+=========", 
+        @"
+  _______
+  |     |
+  O     |
+ /|\    |
+        |
+        |
+=========", 
+        @"
+  _______
+  |     |
+  O     |
+ /|\    |
+ /      |
+        |
+=========", 
+        @"
+  _______
+  |     |
+  O     |
+ /|\    |
+ / \    |
+        |
+=========", 
+    };
 
-        Console.ForegroundColor = ConsoleColor.Magenta;
-        Console.WriteLine(hangmanStages[incorrectGuesses]);
-        Console.ResetColor();
+        int totalStages = difficulty == 1 ? 10 : difficulty == 2 ? 6 : 4;
+        int stagesToUse = hangmanStages.Length - 1; 
+
+        int stageIndex = (int)Math.Ceiling((double)incorrectGuesses * stagesToUse / totalStages);
+
+        stageIndex = Math.Min(stageIndex, stagesToUse);
+
+        Console.WriteLine(hangmanStages[stageIndex]);
     }
+
 
     static int GetDifficulty()
     {

@@ -7,11 +7,11 @@ class HangmanGame
     static List<string> wordList = new List<string> { "developer", "programming", "hangman", "console", "challenge" };
     static int maxAttempts;
     static Dictionary<string, int> leaderboard = new Dictionary<string, int>();
-    static TimeSpan totalTime = TimeSpan.Zero; // Variable to track total time across rounds
+    static TimeSpan totalTime = TimeSpan.Zero; // Tracks total time across rounds
 
     static void Main()
     {
-        Console.ForegroundColor = ConsoleColor.Cyan; // Set text color for the UI
+        Console.ForegroundColor = ConsoleColor.Cyan;
         Console.WriteLine("#############################################");
         Console.WriteLine("#         WELCOME TO THE HANGMAN GAME       #");
         Console.WriteLine("#############################################");
@@ -44,7 +44,7 @@ class HangmanGame
             {
                 Console.Clear();
                 DrawHeader("Hangman Game");
-                DrawHangman(maxAttempts - attemptsLeft,difficulty);
+                DrawHangman(maxAttempts - attemptsLeft, difficulty);
                 DrawWord(guessedWord);
                 DrawAttempts(attemptsLeft);
                 DrawWrongGuesses(wrongGuesses);
@@ -109,7 +109,7 @@ class HangmanGame
             }
             else
             {
-                DrawHangman(maxAttempts,difficulty);
+                DrawHangman(maxAttempts, difficulty);
                 Console.ForegroundColor = ConsoleColor.Red;
                 Console.WriteLine($"Game over! The word was: {wordToGuess}");
                 Console.ResetColor();
@@ -150,7 +150,7 @@ class HangmanGame
         |
         |
         |
-=========", 
+=========",
         @"
   _______
   |     |
@@ -158,7 +158,7 @@ class HangmanGame
         |
         |
         |
-=========", 
+=========",
         @"
   _______
   |     |
@@ -174,7 +174,7 @@ class HangmanGame
  /|     |
         |
         |
-=========", 
+=========",
         @"
   _______
   |     |
@@ -182,7 +182,7 @@ class HangmanGame
  /|\    |
         |
         |
-=========", 
+=========",
         @"
   _______
   |     |
@@ -190,7 +190,7 @@ class HangmanGame
  /|\    |
  /      |
         |
-=========", 
+=========",
         @"
   _______
   |     |
@@ -198,11 +198,11 @@ class HangmanGame
  /|\    |
  / \    |
         |
-=========", 
+=========",
     };
 
         int totalStages = difficulty == 1 ? 10 : difficulty == 2 ? 6 : 4;
-        int stagesToUse = hangmanStages.Length - 1; 
+        int stagesToUse = hangmanStages.Length - 1;
 
         int stageIndex = (int)Math.Ceiling((double)incorrectGuesses * stagesToUse / totalStages);
 
@@ -210,7 +210,6 @@ class HangmanGame
 
         Console.WriteLine(hangmanStages[stageIndex]);
     }
-
 
     static int GetDifficulty()
     {
